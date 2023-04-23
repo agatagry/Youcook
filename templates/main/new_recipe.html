@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>Nowy przepis</title>
+</head>
+<body>
+    <form method="post">
+        {% csrf_token %}
+        {% for input in recipe_form %}
+            {{ input.label }}<br>
+            {{ input }} <br>
+        {% endfor %}
+        Kroki: <br>
+        <button type="button" id="add_step">Dodaj kroki</button>
+    <div id="steps">
+{#        {% for input in recipe_step_form %}#}
+{#            {{ input.label }}#}
+{#            {{ input }}#}
+{#        {% endfor %}<br>#}
+{#        {% for input in recipe_step_form %}#}
+{#            {{ input.label }}#}
+{#            {{ input }}#}
+{#        {% endfor %}#}
+    </div>
+        <input type="submit">
+    </form>
+<script>
+    let add_step_button = document.getElementById("add_step")
+
+    let add_step = () =>{
+        let steps = document.getElementById("steps")
+        let inputs = `{% for input in recipe_step_form %}
+            {{ input.label }}
+            {{ input }}
+        {% endfor %}`
+        steps.insertAdjacentHTML("beforeend",inputs+"<br>")
+    }
+    add_step_button.addEventListener("click", add_step.bind())
+</script>
+</body>
+</html>

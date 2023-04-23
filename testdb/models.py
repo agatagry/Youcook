@@ -72,6 +72,9 @@ class RecipeCategory(models.Model):
     name = models.CharField(max_length=80)
     description = models.CharField(max_length=250)
 
+    def __str__(self):
+        return self.name
+
 
 class Recipe(models.Model):
     DIFFICULTY = [
@@ -92,12 +95,12 @@ class Recipe(models.Model):
     modify_time = models.DateTimeField(default=timezone.now, blank=True, null=True)
     deleted = models.BooleanField(default=False)
 
-    def save(self, *args, **kwargs):
-        self.modify_time = timezone.now
+    def __str__(self):
+        return self.name
 
 
 class RecipeStep(models.Model):
-    recipe_id = models.ForeignKey(Recipe, on_delete=models.DO_NOTHING, blank=False, null=False)
+    recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, blank=False, null=False)
     number_order = models.IntegerField(blank=False, null=False)
     description = models.CharField(max_length=255, blank=False, null=False)
 

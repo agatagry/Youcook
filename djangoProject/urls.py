@@ -22,4 +22,7 @@ urlpatterns = [
     path('auth/', include('django.contrib.auth.urls')),
     path('', views.index),
     path('sign_up/', views.sign_up),
+    path('profile_<str:nickname>/', views.profile),
+    path('recipe_<str:recipe_name>/', views.recipe),
+    path('create_recipe/', views.recipe_create)
 ]

@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
 </head>
 <body>
-    {% extends "admin/login.html" %}
+    <form method="post">
+    {% load crispy_forms_tags %} {% block content %}
+    {% csrf_token %}{{form|crispy}}
+    <p>Nie masz konta? <a href="/sign_up">Zarejestruj się!</a></p>
+    <button type="submit" class="btn btn-success">Zaloguj się</button>
+</form>
+{% endblock %}
 </body>
 </html>

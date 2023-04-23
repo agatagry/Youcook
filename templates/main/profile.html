@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil Użytkownika {{ user }}</title>
+</head>
+<body>
+    {% for recipe in recipes %}
+        <div style="background-color: cornsilk; border: solid 1px #c7c2ac; padding-left: 25px; padding-right: 25px; margin: 10px 10px 10px 10px; word-wrap: break-word;">
+            <h1><a href="../recipe_{{ recipe.name }}">{{ recipe.name }}</a> </h1>
+            published: {{ recipe.create_time }} <br>
+        </div>
+    {% endfor %}
+</body>
+</html>

@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Rejestracja</title>
 </head>
 <body>
 <form method="post">
     {% load crispy_forms_tags %} {% block content %}
     {% csrf_token %}{{form|crispy}}
-    <p>Have an account? Login <a href="/login">Here</a>!</p>
-    <button type="submit" class="btn btn-success">Register</button>
+    <p>Masz konto? <a href="/auth/login">Zaloguj się!</a></p>
+    <button type="submit" class="btn btn-success">Zarejestruj</button>
 </form>
 {% endblock %}
 </body>
