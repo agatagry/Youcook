@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }}</title>
+</head>
+<body>
+<h1>{{ product.name }} od {{ product.manufacturer }}</h1>
+<p>kategoria produktu: {{ product.category }}</p>
+<p>Tabela wartości odżywczych:</p>
+<table style="border: solid 1px lightslategrey; border-radius: 5px;">
+    <tr>
+        <td>Kalorie:</td>
+        <td>{% if product.calories is not None %}{{ product.calories }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Tłuszcz:</td>
+        <td>{% if product.total_fat is not None %}{{ product.total_fat }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Tłuszcze nasycone:</td>
+        <td>{% if product.saturated_fat is not None %}{{ product.saturated_fat }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Cholesterol:</td>
+        <td>{% if product.cholesterol is not None %}{{ product.cholesterol }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Sód:</td>
+        <td>{% if product.sodium is not None %}{{ product.sodium }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Węglowodany:</td>
+        <td>{% if product.total_carbohydrate is not None %}{{ product.total_carbohydrate }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Cukry:</td>
+        <td>{% if product.sugars is not None %}{{ product.sugars }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Błonnik:</td>
+        <td>{% if product.fiber is not None %}{{ product.fiber }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Białko:</td>
+        <td>{% if product.protein is not None %}{{ product.protein }}{% endif %}</td>
+    </tr>
+    <tr>
+        <td>Kod kreskowy:</td>
+        <td>{% if product.barcode is not None %}{ product.barcode }}{% endif %}</td>
+    </tr>
+</table>
+</body>
+</html>

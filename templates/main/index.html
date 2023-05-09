@@ -8,16 +8,22 @@
     <header>
         <h1>YouCook</h1>
         {% if user is not None %}
-            <p>Witaj <a href="/{{ user }}">{{ user }}</a>!<br>
-            <a></a></p>
+            <p>Witaj <a href="/profile_{{ user }}">{{ user }}</a>!<br>
+                <a href="create_recipe/">Dodaj nowy przepis</a><br>
+            <a href="auth/logout">Wyloguj się</a></p>
         {% else %}
             <p>Witaj! <a href="/auth/login">Zaloguj się!</a></p>
         {% endif %}
     </header>
     {% for recipe in recipes %}
         <div style="background-color: cornsilk; border: solid 1px #c7c2ac; padding-left: 25px; padding-right: 25px; margin: 10px 10px 10px 10px; word-wrap: break-word;">
-            <h1><a href="recipe/{{ recipe.id }}">{{ recipe.title }}</a> </h1>
-            published: {{ recipe.create_time }} <br>
+            <h1><a href="recipe_{{ recipe.name }}_{{ recipe.id }}/">{{ recipe.name }}</a> </h1>
+            Liczba porcji: {{ recipe.servings }} <br>
+            Czas przygotowania: {{ recipe.time }} <br>
+            Poziom trudności: {{ recipe.difficulty }} <br>
+            {{ recipe.description }} <br>
+            <img src="data:image/jpeg;base64,{{ recipe.photo }}"><br>
+            opublikowano: {{ recipe.create_time }} <br>
         </div>
     {% endfor %}
 </body>

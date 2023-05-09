@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+
 from .managers import CustomUserManager
 
 
@@ -35,20 +36,27 @@ class ProductCategory(models.Model):
     description = models.CharField(max_length=250)
     density = models.FloatField()
 
+    def __str__(self):
+        return self.name
+
 
 class Product(models.Model):
-    category_id = models.ForeignKey(ProductCategory, on_delete=models.DO_NOTHING)
-    manufacturer = models.CharField(max_length=45, blank=False, null=False)
-    calories = models.IntegerField()
-    total_fat = models.DecimalField(max_digits=5, decimal_places=2)
-    saturated_fat = models.DecimalField(max_digits=5, decimal_places=2)
-    cholesterol = models.DecimalField(max_digits=5, decimal_places=2)
-    sodium = models.DecimalField(max_digits=5, decimal_places=2)
-    total_carbohydrate = models.DecimalField(max_digits=5, decimal_places=2)
-    sugars = models.DecimalField(max_digits=5, decimal_places=2)
-    fiber = models.DecimalField(max_digits=5, decimal_places=2)
-    protein = models.DecimalField(max_digits=5, decimal_places=2)
-    barcode = models.CharField(max_length=100)
+    category = models.ForeignKey(ProductCategory, on_delete=models.DO_NOTHING)
+    manufacturer = models.CharField(max_length=45, blank=True, null=True)
+    name = models.CharField(max_length=50, blank=False, null=False, default='Nowy produkt')
+    calories = models.IntegerField(blank=True, null=True)
+    total_fat = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    saturated_fat = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    cholesterol = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    sodium = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    total_carbohydrate = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    sugars = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    fiber = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    protein = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
+    barcode = models.CharField(max_length=100, blank=True, null=True)
+
+    def __str__(self):
+        return f'{self.name} od {self.manufacturer}'
 
 
 class CookingUnits(models.Model):
@@ -61,6 +69,9 @@ class CookingUnits(models.Model):
     name = models.CharField(max_length=30)
     type = models.BooleanField()
     fraction_of_base = models.FloatField()
+
+    def __str__(self):
+        return self.name
 
 
 class RecipeCategory(models.Model):
@@ -84,13 +95,14 @@ class Recipe(models.Model):
         ('hard', 'Hard'),
         ('extremely hard', 'Extremely hard'),
     ]
-    user_id = models.ForeignKey(MyUser, on_delete=models.DO_NOTHING, blank=False, null=False)
-    category_id = models.ForeignKey(RecipeCategory, on_delete=models.DO_NOTHING, blank=False, null=False)
-    name = models.CharField(max_length=100, blank=False, null=False)
+    user = models.ForeignKey(MyUser, on_delete=models.DO_NOTHING, blank=False, null=False)
+    category = models.ForeignKey(RecipeCategory, on_delete=models.DO_NOTHING, blank=False, null=False)
+    name = models.CharField(max_length=100, blank=False, null=False, default='Nowy produkt')
     servings = models.IntegerField(blank=False, null=False)
     difficulty = models.CharField(max_length=14, choices=DIFFICULTY, default='Easy', blank=False, null=False)
     time = models.IntegerField(blank=False, null=False)
     description = models.CharField(max_length=255, blank=True, null=True)
+    photo = models.BinaryField(max_length=900000, blank=True, null=True)
     create_time = models.DateTimeField(auto_now_add=True, blank=False, null=False)
     modify_time = models.DateTimeField(default=timezone.now, blank=True, null=True)
     deleted = models.BooleanField(default=False)
@@ -100,26 +112,27 @@ class Recipe(models.Model):
 
 
 class RecipeStep(models.Model):
-    recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, blank=False, null=False)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, blank=False, null=False)
     number_order = models.IntegerField(blank=False, null=False)
     description = models.CharField(max_length=255, blank=False, null=False)
+    photo = models.BinaryField(max_length=900000, blank=True, null=True)
 
 
 class RecipeRate(models.Model):
-    recipe_id = models.ForeignKey(Recipe, on_delete=models.DO_NOTHING)
+    recipe = models.ForeignKey(Recipe, on_delete=models.DO_NOTHING)
     rate = models.IntegerField()
 
 
 class RecipeProduct(models.Model):
-    product_id = models.ForeignKey(Product, on_delete=models.DO_NOTHING, blank=True, null=True)
-    recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE, blank=False, null=False)
-    unit_id = models.ForeignKey(CookingUnits, on_delete=models.DO_NOTHING, blank=False, null=False)
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, blank=True, null=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE, blank=False, null=False)
+    unit = models.ForeignKey(CookingUnits, on_delete=models.DO_NOTHING, blank=False, null=False)
     quantity = models.DecimalField(max_digits=5, decimal_places=2, blank=False, null=False)
 
 
 class RecipeComment(models.Model):
-    recipe_id = models.ForeignKey(Recipe, on_delete=models.DO_NOTHING, blank=False, null=False)
-    user_id = models.ForeignKey(MyUser, on_delete=models.SET_NULL, blank=True, null=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.DO_NOTHING, blank=False, null=False)
+    user = models.ForeignKey(MyUser, on_delete=models.SET_NULL, blank=True, null=True)
     nickname = models.CharField(max_length=50, blank=True, null=True)
     description = models.CharField(max_length=255, blank=False, null=False)
 
@@ -134,18 +147,18 @@ class Calendar(models.Model):
         ('dinner', 'Dinner'),
         ('supper', 'Supper'),
     ]
-    user_id = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=False, null=False)
-    recipe_id = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=False, null=False)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
     date = models.DateField(blank=False, null=False)
     meal_type = models.CharField(max_length=16, choices=MEAL_TYPE, blank=False, null=False)
 
 
 class ShoppingList(models.Model):
-    user_id = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=False, null=False)
+    user = models.ForeignKey(MyUser, on_delete=models.CASCADE, blank=False, null=False)
     title = models.CharField(max_length=50, blank=False, null=False)
 
 
 class ShoppingListProduct(models.Model):
-    shopping_list_id = models.ForeignKey(ShoppingList, on_delete=models.CASCADE, blank=False, null=False)
-    product_id = models.ForeignKey(Product, on_delete=models.DO_NOTHING, blank=False, null=False)
+    shopping_list = models.ForeignKey(ShoppingList, on_delete=models.CASCADE, blank=False, null=False)
+    product = models.ForeignKey(Product, on_delete=models.DO_NOTHING, blank=False, null=False)
     quantity = models.IntegerField()

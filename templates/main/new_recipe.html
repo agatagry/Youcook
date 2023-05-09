@@ -1,33 +1,36 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <meta charset="UTF-8">
     <title>Nowy przepis</title>
 </head>
 <body>
-    <form method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {% for input in recipe_form %}
             {{ input.label }}<br>
             {{ input }} <br>
         {% endfor %}
         Kroki: <br>
-        <button type="button" id="add_step">Dodaj kroki</button>
+        <button type="button" id="add_step">Dodaj krok</button>
     <div id="steps">
-{#        {% for input in recipe_step_form %}#}
-{#            {{ input.label }}#}
-{#            {{ input }}#}
-{#        {% endfor %}<br>#}
-{#        {% for input in recipe_step_form %}#}
-{#            {{ input.label }}#}
-{#            {{ input }}#}
-{#        {% endfor %}#}
+
+    </div>
+        Produkty: <br>
+        <button type="button" id="add_product">Dodaj produkt</button>
+    <div id="products">
+
     </div>
         <input type="submit">
     </form>
 <script>
     let add_step_button = document.getElementById("add_step")
-
+    let add_product_button = document.getElementById("add_product")
+    let product_counter = 0
+    let step_counter = 0
     let add_step = () =>{
         let steps = document.getElementById("steps")
         let inputs = `{% for input in recipe_step_form %}
@@ -35,8 +38,57 @@
             {{ input }}
         {% endfor %}`
         steps.insertAdjacentHTML("beforeend",inputs+"<br>")
+        let step_photo = document.querySelector("#steps").querySelector("input[name='photo']")
+        step_photo.setAttribute("name", "step_photo_"+step_counter)
+        step_counter+=1
+    }
+    let add_product = () =>{
+        let products = document.getElementById("products")
+        let inputs = `Product
+            <input type="text" class="autocomplete-input" name="product" data-product-id="">
+            <ul id="ull" class="autocomplete-result-list"></ul>
+            Quantity <input type="number" name="quantity">
+            Cooking units {{ recipe_product_form.unit }}`
+        products.insertAdjacentHTML("beforeend",inputs+"<br>")
+        let product_search = document.querySelector("#products").querySelector("input[name='product']")
+        product_search.setAttribute("name", "product_"+product_counter)
+        let product_quantity = document.querySelector("#products").querySelector("input[name='quantity']")
+        product_quantity.setAttribute("name", "quantity_"+product_counter)
+        product_counter+=1
+        $('form input[name^="product"]').off()
+        $('form input[name^="product"]').on("input", (e) => getValue(e))
     }
     add_step_button.addEventListener("click", add_step.bind())
+    add_product_button.addEventListener("click", add_product.bind())
+let searchResult = [];
+    let getValue = (e) => {
+      // Dodaj listener do pola input
+        let query = $(e.currentTarget)
+        console.log(query)
+        // Wywołaj funkcję asynchroniczną do wyszukiwania produktów po każdej zmianie w polu input
+        searchProducts(query);
+      }
+
+      function searchProducts(query) {
+        $.ajax({
+          url: '../search/',
+          data: {name: $(query).val()},
+          dataType: 'json',
+          success: function(response) {
+              console.log(response)
+            searchResult = response.name;
+            console.log(searchResult)
+              // Zainicjuj autouzupełnianie pola input za pomocą pobranej listy produktów
+            $(query).autocomplete({
+              source: searchResult
+            });
+          },
+          error: function(response){
+            console.warn(response)
+          }
+        });
+      }
+
 </script>
 </body>
 </html>
